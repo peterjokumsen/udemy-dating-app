@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Api.Controllers
 {
-    [ApiController]
+    [ApiController, Produces("application/json")]
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
@@ -22,10 +22,19 @@ namespace Api.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Get all users
+        /// </summary>
+        /// <returns>All users</returns>
         [HttpGet]
         public async Task<IEnumerable<AppUser>> GetUsers() =>
             await _context.Users.ToListAsync();
 
+        /// <summary>
+        /// Get a user
+        /// </summary>
+        /// <param name="id">Id of the user</param>
+        /// <returns>Single user</returns>
         [HttpGet("{id:guid}")]
         public async Task<AppUser> GetUser(Guid id) =>
             await _context.Users.FindAsync(id);
