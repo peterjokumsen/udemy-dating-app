@@ -25,3 +25,7 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+## SSL
+
+Before serving in development, will need to generate `server.crt` and `server.key` in `ssl` folder using [generation script](./generate.sh). Suggest added the generated `server.crt` to Trusted certificates to prevent any issues with browser.
