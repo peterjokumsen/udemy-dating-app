@@ -1,7 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Api.Controllers;
 using Api.Dtos;
-using Api.DTOs;
 using Api.Entities;
 using Api.Repositories;
 using Api.Services;
