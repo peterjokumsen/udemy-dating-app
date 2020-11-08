@@ -6,20 +6,16 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Api.Controllers
 {
-    [ApiController, Produces("application/json")]
-    [Route("[controller]")]
-    public class UsersController : ControllerBase
+    public class UsersController : BaseApiController
     {
-        private readonly DataContext _context;
-        private readonly ILogger<UsersController> _logger;
-
-        public UsersController(DataContext context, ILogger<UsersController> logger)
+        public UsersController(
+            DataContext context,
+            ILogger<UsersController> logger) : base(context, logger)
         {
-            _context = context;
-            _logger = logger;
         }
 
         /// <summary>
@@ -27,8 +23,9 @@ namespace Api.Controllers
         /// </summary>
         /// <returns>All users</returns>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IEnumerable<AppUser>> GetUsers() =>
-            await _context.Users.ToListAsync();
+            await Context.Users.ToListAsync();
 
         /// <summary>
         /// Get a user
@@ -37,7 +34,8 @@ namespace Api.Controllers
         /// <returns>Single user</returns>
         /// <response code="404">Requested user does not exist</response>
         [HttpGet("{id:guid}")]
+        [Authorize]
         public async Task<AppUser> GetUser(Guid id) =>
-            await _context.Users.FindAsync(id);
+            await Context.Users.FindAsync(id);
     }
 }

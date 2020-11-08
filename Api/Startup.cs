@@ -1,8 +1,7 @@
-using Api.Data;
+using Api.Extensions;
 using Api.Filters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -23,9 +22,11 @@ namespace Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(options =>
+            services.AddApplicationServices(_config);
+
+            services.AddRouting(options =>
             {
-                options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
+                options.LowercaseUrls = true;
             });
 
             services.AddControllers(options =>
@@ -35,6 +36,7 @@ namespace Api
             });
 
             services.AddCors();
+            services.AddIdentityServices(_config);
 
             services.AddSwaggerGen(c =>
             {
@@ -77,6 +79,7 @@ namespace Api
                     .WithOrigins("https://localhost:4200");
             });
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
