@@ -1,33 +1,28 @@
-﻿using Api.Data;
-using Api.DTOs;
-using Api.Entities;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Api.Dtos;
+using Api.DTOs;
+using Api.Entities;
+using Api.Repositories;
 using Api.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Api.Controllers
 {
     public class AccountController : BaseApiController
     {
         private readonly ITokenService _tokenService;
+        private readonly IAccountRepository _repo;
 
         public AccountController(
-            ITokenService tokenService,
-            DataContext context,
-            ILogger<AccountController> logger) : base(context, logger)
+            IAccountRepository repo,
+            ILogger<AccountController> logger) : base(repo.Context, logger)
         {
-            _tokenService = tokenService;
+            _tokenService = repo.TokenService;
+            _repo = repo;
         }
-
-        private Task<bool> UserExists(string username) =>
-            Context.Users.AnyAsync(u => EF.Functions.Like(username, u.UserName));
 
         /// <summary>
         /// Register new user
@@ -50,7 +45,7 @@ namespace Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDto))]
         public async Task<IActionResult> Register(RegisterDto input)
         {
-            if (await UserExists(input.Username))
+            if (await _repo.UserExistsAsync(input.Username))
                 return BadRequest(new {Reason = $"Username '{input.Username}' already exists."});
 
             // TODO: try and hook into model validation instead
@@ -62,24 +57,21 @@ namespace Api.Controllers
             //    throw new ArgumentException("hook into model state result?");
             //}
 
-            using (var hmac = new HMACSHA256())
+            var hash = _repo.ComputeHash(input.Password, out var salt);
+            var user = new AppUser
             {
-                var user = new AppUser
-                {
-                    UserName = input.Username,
-                    PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(input.Password)),
-                    PasswordSalt = hmac.Key,
-                };
+                UserName = input.Username,
+                PasswordHash = hash,
+                PasswordSalt = salt,
+            };
 
-                await Context.Users.AddAsync(user);
-                await Context.SaveChangesAsync();
+            await _repo.AddUserAsync(user);
 
-                return Ok(new UserDto
-                {
-                    Username = user.UserName,
-                    Token = _tokenService.CreateToken(user),
-                });
-            }
+            return Ok(new UserDto
+            {
+                Username = user.UserName,
+                Token = _tokenService.CreateToken(user),
+            });
         }
 
         /// <summary>
@@ -104,27 +96,24 @@ namespace Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(UserDto))]
         public async Task<IActionResult> Login(LoginDto input)
         {
-            var user = await Context.Users
-                .SingleOrDefaultAsync(u => EF.Functions.Like(input.Username, u.UserName));
+            var user = await _repo.FindUserAsync(input.Username);
 
             var invalid = Unauthorized(new { reason = "Invalid username and/or password" });
             if (user == null)
                 return invalid;
 
-            using (var hmac = new HMACSHA256(user.PasswordSalt))
-            {
-                var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(input.Password));
-                var compares = computedHash
-                    .Select((b, i) => user.PasswordHash.Length >= i && b == user.PasswordHash[i]);
-                if (compares.Any(c => !c))
-                    return invalid;
+            var computedHash = _repo.ComputeHash(input.Password, user.PasswordSalt);
+            var compares = computedHash
+                .Select((b, i) => user.PasswordHash.Length >= i && b == user.PasswordHash[i]);
 
-                return Ok(new UserDto
-                {
-                    Username = user.UserName,
-                    Token = _tokenService.CreateToken(user),
-                });
-            }
+            if (compares.Any(c => !c))
+                return invalid;
+
+            return Ok(new UserDto
+            {
+                Username = user.UserName,
+                Token = _tokenService.CreateToken(user),
+            });
         }
     }
 }

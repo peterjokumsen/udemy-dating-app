@@ -1,4 +1,5 @@
 ﻿using Api.Data;
+using Api.Repositories;
 using Api.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -18,6 +19,7 @@ namespace Api.Extensions
                 options.UseSqlite(config.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddScoped<IAccountRepository, AccountRepository>();
 
             return services;
         }
