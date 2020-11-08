@@ -1,0 +1,14 @@
+{
+  "generalConfiguration": {
+    "exclude": [".*polyfill\\.ts"],
+    "sortOnBeforeSave": true
+  },
+  "importStringConfiguration": {
+    "maximumNumberOfImportExpressionsPerLine": {
+      "type": "newLineEachExpressionAfterCountLimitExceptIfOnlyOne",
+      "count": 80
+    },
+    "tabSize": 2,
+    "quoteMark": "single"
+  }
+}

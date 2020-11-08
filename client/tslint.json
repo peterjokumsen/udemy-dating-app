@@ -36,10 +36,16 @@
       true,
       {
         "order": [
-          "static-field",
-          "instance-field",
-          "static-method",
-          "instance-method"
+          "private-static-field",
+          "public-static-field",
+          "private-instance-field",
+          "protected-instance-field",
+          "public-instance-field",
+          "private-constructor",
+          "public-constructor",
+          "private-instance-method",
+          "protected-instance-method",
+          "public-instance-method"
         ]
       }
     ],
@@ -108,7 +114,7 @@
       "options": [
         "ban-keywords",
         "check-format",
-        "allow-pascal-case"
+        "allow-leading-underscore"
       ]
     },
     "whitespace": {
