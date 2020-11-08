@@ -28,4 +28,4 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ## SSL
 
-Before serving in development, will need to generate `server.crt` and `server.key` in `ssl` folder using [generation script](./generate.sh). Suggest added the generated `server.crt` to Trusted certificates to prevent any issues with browser.
+Before serving in development, will need to generate `server.crt` and `server.key` in `ssl` folder using [generation script](./ssl/generate.sh). Suggest added the generated `server.crt` to Trusted certificates to prevent any issues with browser.
