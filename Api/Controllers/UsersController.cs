@@ -35,6 +35,7 @@ namespace Api.Controllers
         /// </summary>
         /// <param name="id">Id of the user</param>
         /// <returns>Single user</returns>
+        /// <response code="404">Requested user does not exist</response>
         [HttpGet("{id:guid}")]
         public async Task<AppUser> GetUser(Guid id) =>
             await _context.Users.FindAsync(id);

@@ -1,4 +1,5 @@
 using Api.Data;
+using Api.Filters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -27,7 +28,12 @@ namespace Api
                 options.UseSqlite(_config.GetConnectionString("DefaultConnection"));
             });
 
-            services.AddControllers();
+            services.AddControllers(options =>
+            {
+                // Source: https://www.strathweb.com/2018/10/convert-null-valued-results-to-404-in-asp-net-core-mvc/
+                options.Conventions.Add(new NotFoundResultFilterConvention());
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo
