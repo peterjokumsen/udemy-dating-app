@@ -55,12 +55,5 @@ describe('AppComponent', () => {
       const compiled = fixture.nativeElement;
       expect(compiled.querySelector('app-nav')).toBeTruthy();
     });
-
-    it('should app-home', () => {
-      fixture.whenStable().then(() => {
-        const compiled = fixture.nativeElement;
-        expect(compiled.querySelector('app-home')).toBeTruthy();
-      });
-    });
   });
 });

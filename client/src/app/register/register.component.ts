@@ -1,5 +1,8 @@
+import { ToastrService } from 'ngx-toastr';
+
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
+import { ErrorResponse } from '../models';
 import { AccountService } from '../services';
 
 @Component({
@@ -12,16 +15,22 @@ export class RegisterComponent implements OnInit {
 
   model: any = {};
 
-  constructor(private _accSvc: AccountService) { }
+  constructor(
+    private _accountService: AccountService,
+    private _toastr: ToastrService,
+  ) { }
 
   ngOnInit(): void {
   }
 
   register(): void {
-    this._accSvc.register(this.model).subscribe(r => {
+    this._accountService.register(this.model).subscribe(r => {
       console.log(r);
       this.cancel();
-    }, e => console.error(e));
+    }, (e: ErrorResponse) => {
+      this._toastr.error(e.error.title);
+      console.error(e);
+    });
   }
 
   cancel(): void {

@@ -1,7 +1,9 @@
+import { ToastrService } from 'ngx-toastr';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 
-import { AccountService } from '../_services/account.service';
+import { AccountService } from '../services';
 import { RegisterComponent } from './register.component';
 
 describe('RegisterComponent', () => {
@@ -16,6 +18,7 @@ describe('RegisterComponent', () => {
       imports: [ FormsModule ],
       providers: [
         { provide: AccountService, useValue: accountSpy },
+        { provide: ToastrService, useValue: {} },
       ],
       declarations: [ RegisterComponent ]
     }).compileComponents();

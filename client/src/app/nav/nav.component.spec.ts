@@ -1,5 +1,8 @@
+import { ToastrService } from 'ngx-toastr';
+
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { AccountService } from '../services';
 import { NavComponent } from './nav.component';
@@ -13,10 +16,11 @@ describe('NavComponent', () => {
     accountSvcSpy = jasmine.createSpyObj<AccountService>('AccountService', ['login']);
 
     await TestBed.configureTestingModule({
-      imports: [ FormsModule ],
+      imports: [ FormsModule, RouterTestingModule ],
       declarations: [ NavComponent ],
       providers: [
         { provide: AccountService, useValue: accountSvcSpy },
+        { provide: ToastrService, useValue: {} },
       ],
     }).compileComponents();
   });
