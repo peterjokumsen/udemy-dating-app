@@ -1,28 +1,34 @@
-import { cold } from 'jasmine-marbles';
+import { MockComponent } from 'ng-mocks';
+import { of } from 'rxjs';
 
-import { HttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
+import { AccountService } from './_services/account.service';
 import { AppComponent } from './app.component';
+import { HomeComponent } from './home/home.component';
+import { NavComponent } from './nav/nav.component';
 
 describe('AppComponent', () => {
-  let httpSpy: jasmine.SpyObj<HttpClient>;
+  let accountSvcSpy: jasmine.SpyObj<AccountService>;
   let fixture: ComponentFixture<AppComponent>;
   let component: AppComponent;
 
   beforeEach(async () => {
-    httpSpy = jasmine.createSpyObj<HttpClient>('HttpClient', ['get']);
+    accountSvcSpy = jasmine.createSpyObj<AccountService>('AccountService', ['setCurrentUser']);
+    accountSvcSpy.currentUser$ = of(null);
 
     await TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
       ],
       providers: [
-        { provide: HttpClient, useValue: httpSpy },
+        { provide: AccountService, useValue: accountSvcSpy },
       ],
       declarations: [
-        AppComponent
+        AppComponent,
+        MockComponent(NavComponent),
+        MockComponent(HomeComponent),
       ],
     }).compileComponents();
   });
@@ -42,22 +48,18 @@ describe('AppComponent', () => {
 
   describe('after initialisation', () => {
     beforeEach(() => {
-      httpSpy.get.and.returnValue(cold('0|', [
-        [{ id: 'id', userName: 'userName' }],
-      ]));
-
       fixture.detectChanges();
     });
 
-    it('should render title', () => {
+    it('should display app-nav', () => {
       const compiled = fixture.nativeElement;
-      expect(compiled.querySelector('h1').textContent).toContain('The Udemy Dating App');
+      expect(compiled.querySelector('app-nav')).toBeTruthy();
     });
 
-    it('should show results from api', () => {
+    it('should app-home', () => {
       fixture.whenStable().then(() => {
         const compiled = fixture.nativeElement;
-        expect(compiled.querySelector('li').textContent).toContain('id - userName');
+        expect(compiled.querySelector('app-home')).toBeTruthy();
       });
     });
   });

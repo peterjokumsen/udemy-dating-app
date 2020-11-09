@@ -1,9 +1,7 @@
-import { Observable } from 'rxjs';
-import { first, map, shareReplay } from 'rxjs/operators';
-import { User } from 'src/models/user';
-
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+
+import { AccountService } from './_services/account.service';
+import { UserWithToken } from './models/user-with-token';
 
 @Component({
   selector: 'app-root',
@@ -12,19 +10,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
   title = 'The Udemy Dating App';
-  users$: Observable<User[]>;
 
-  constructor(protected _http: HttpClient) {}
+  constructor(private _accountService: AccountService) {}
 
   ngOnInit(): void {
-    this.getUsers();
+    this.setCurrentUser();
   }
 
-  getUsers(): void {
-    this.users$ = this._http.get('https://localhost:5001/users').pipe(
-        first(),
-        map((r) => r as User[]),
-        shareReplay(1),
-    );
+  setCurrentUser(): void {
+    const user: UserWithToken = JSON.parse(localStorage.getItem('user'));
+    this._accountService.setCurrentUser(user);
   }
 }

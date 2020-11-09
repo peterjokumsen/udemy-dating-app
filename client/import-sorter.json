@@ -10,5 +10,8 @@
     },
     "tabSize": 2,
     "quoteMark": "single"
+  },
+  "sortConfiguration": {
+    "removeUnusedImports": true
   }
 }
