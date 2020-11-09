@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 
-import { AccountService } from '../_services/account.service';
 import { LoginModel } from '../models';
+import { AccountService } from '../services';
 
 @Component({
   selector: 'app-nav',

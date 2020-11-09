@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 
-import { AccountService } from '../_services/account.service';
+import { AccountService } from '../services';
 import { NavComponent } from './nav.component';
 
 describe('NavComponent', () => {
