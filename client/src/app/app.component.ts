@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import { AccountService } from './_services/account.service';
-import { UserWithToken } from './models/user-with-token';
+import { UserWithToken } from './models';
 
 @Component({
   selector: 'app-root',

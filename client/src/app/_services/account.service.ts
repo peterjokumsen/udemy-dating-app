@@ -4,9 +4,7 @@ import { tap } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { LoginModel } from '../models/login-model';
-import { RegisterModel } from '../models/register-model';
-import { UserWithToken } from '../models/user-with-token';
+import { LoginModel, RegisterModel, UserWithToken } from '../models';
 
 @Injectable({
   providedIn: 'root'
