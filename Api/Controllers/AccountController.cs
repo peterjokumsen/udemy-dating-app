@@ -95,7 +95,7 @@ namespace Api.Controllers
         {
             var user = await _repo.FindUserAsync(input.Username);
 
-            var invalid = Unauthorized(new { reason = "Invalid username and/or password" });
+            var invalid = Unauthorized(new { title = "Invalid username and/or password" });
             if (user == null)
                 return invalid;
 
