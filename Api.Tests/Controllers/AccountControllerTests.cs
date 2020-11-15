@@ -7,6 +7,7 @@ using Api.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Moq;
 using Xunit;
 
@@ -25,6 +26,7 @@ namespace Api.Tests.Controllers
 
             Controller = new AccountController(
                 _repoMock.Object,
+                Mock.Of<IOptions<ApiBehaviorOptions>>(),
                 Mock.Of<ILogger<AccountController>>());
         }
 
