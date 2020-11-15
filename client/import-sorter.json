@@ -1,17 +1,21 @@
 {
-  "generalConfiguration": {
-    "exclude": [".*polyfill\\.ts"],
-    "sortOnBeforeSave": true
-  },
   "importStringConfiguration": {
-    "maximumNumberOfImportExpressionsPerLine": {
-      "type": "newLineEachExpressionAfterCountLimitExceptIfOnlyOne",
-      "count": 80
-    },
+    "trailingComma": "multiLine",
     "tabSize": 2,
-    "quoteMark": "single"
+    "maximumNumberOfImportExpressionsPerLine": {
+      "count": 120
+    }
   },
   "sortConfiguration": {
-    "removeUnusedImports": true
+    "removeUnusedImports": true,
+    "customOrderingRules": {
+      "defaultNumberOfEmptyLinesAfterGroup": 0
+    }
+  },
+  "generalConfiguration": {
+    "sortOnBeforeSave": true,
+    "exclude": [
+      "polyfills.ts"
+    ]
   }
 }

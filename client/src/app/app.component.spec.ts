@@ -1,9 +1,7 @@
 import { MockComponent } from 'ng-mocks';
 import { of } from 'rxjs';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { NavComponent } from './nav/nav.component';

@@ -1,8 +1,6 @@
 import { ToastrService } from 'ngx-toastr';
 import { ReplaySubject } from 'rxjs';
-
 import { TestBed } from '@angular/core/testing';
-
 import { UserWithToken } from '../models';
 import { AccountService } from '../services';
 import { AuthGuard } from './auth.guard';

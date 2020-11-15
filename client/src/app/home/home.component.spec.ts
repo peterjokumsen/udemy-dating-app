@@ -1,8 +1,6 @@
 import { MockComponent } from 'ng-mocks';
-
 import { HttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { RegisterComponent } from '../register/register.component';
 import { HomeComponent } from './home.component';
 

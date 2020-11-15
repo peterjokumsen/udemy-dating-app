@@ -1,7 +1,5 @@
 import { ToastrService } from 'ngx-toastr';
-
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-
 import { ErrorResponse } from '../models';
 import { AccountService } from '../services';
 

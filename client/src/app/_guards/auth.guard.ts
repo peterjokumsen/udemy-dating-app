@@ -1,10 +1,8 @@
 import { ToastrService } from 'ngx-toastr';
 import { noop, Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-
 import { Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
-
 import { AccountService } from '../_services/account.service';
 
 @Injectable({

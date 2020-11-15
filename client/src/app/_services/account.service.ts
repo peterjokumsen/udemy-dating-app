@@ -1,9 +1,7 @@
 import { Observable, ReplaySubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
-
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
 import { LoginModel, RegisterModel, UserWithToken } from '../models';
 
 @Injectable({

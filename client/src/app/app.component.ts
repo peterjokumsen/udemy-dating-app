@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-
 import { UserWithToken } from './models';
 import { AccountService } from './services';
 

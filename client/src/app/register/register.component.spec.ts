@@ -1,8 +1,6 @@
 import { ToastrService } from 'ngx-toastr';
-
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-
 import { AccountService } from '../services';
 import { RegisterComponent } from './register.component';
 
