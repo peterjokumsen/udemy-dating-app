@@ -11,7 +11,6 @@ namespace Api.Repositories
 {
     public interface IAccountRepository
     {
-        DataContext Context { get; }
         ITokenService TokenService { get; }
 
         Task<AppUser> FindUserAsync(string username);
@@ -55,7 +54,7 @@ namespace Api.Repositories
 
         public byte[] ComputeHash(string password, out byte[] salt)
         {
-            using (var hmac = new HMACSHA256())
+            using (var hmac = new HMACSHA512())
             {
                 salt = hmac.Key;
                 return hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
@@ -64,7 +63,7 @@ namespace Api.Repositories
 
         public byte[] ComputeHash(string password, byte[] salt)
         {
-            using (var hmac = new HMACSHA256(salt))
+            using (var hmac = new HMACSHA512(salt))
                 return hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
         }
     }

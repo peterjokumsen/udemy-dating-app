@@ -1,5 +1,4 @@
 ﻿using System;
-using Api.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -9,8 +8,7 @@ namespace Api.Controllers
     public class BuggyController : BaseApiController
     {
         public BuggyController(
-            DataContext context,
-            ILogger<BuggyController> logger) : base(context, logger)
+            ILogger<BuggyController> logger) : base(logger)
         {
         }
 

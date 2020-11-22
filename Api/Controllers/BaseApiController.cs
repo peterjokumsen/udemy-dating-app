@@ -1,5 +1,4 @@
-﻿using Api.Data;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace Api.Controllers
@@ -8,12 +7,10 @@ namespace Api.Controllers
     [Route("[controller]")]
     public class BaseApiController : ControllerBase
     {
-        protected DataContext Context { get; }
         protected ILogger Logger { get; }
 
-        protected BaseApiController(DataContext context, ILogger logger)
+        protected BaseApiController(ILogger logger)
         {
-            Context = context;
             Logger = logger;
         }
     }

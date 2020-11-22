@@ -1,21 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Api.Data;
-using Api.Entities;
+using Api.Dtos;
+using Api.Repositories;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Api.Controllers
 {
+    [Authorize]
     public class UsersController : BaseApiController
     {
+        private readonly IUserRepository _repo;
+
         public UsersController(
-            DataContext context,
-            ILogger<UsersController> logger) : base(context, logger)
+            IUserRepository repo,
+            ILogger<UsersController> logger) : base(logger)
         {
+            _repo = repo;
         }
 
         /// <summary>
@@ -23,19 +26,21 @@ namespace Api.Controllers
         /// </summary>
         /// <returns>All users</returns>
         [HttpGet]
-        [AllowAnonymous]
-        public async Task<IEnumerable<AppUser>> GetUsers() =>
-            await Context.Users.ToListAsync();
+        public async Task<IEnumerable<MemberDto>> GetUsers()
+        {
+            return await _repo.GetMembersAsync();
+        }
 
         /// <summary>
         /// Get a user
         /// </summary>
-        /// <param name="id">Id of the user</param>
+        /// <param name="username">Username of the user</param>
         /// <returns>Single user</returns>
         /// <response code="404">Requested user does not exist</response>
-        [HttpGet("{id:guid}")]
-        [Authorize]
-        public async Task<AppUser> GetUser(Guid id) =>
-            await Context.Users.FindAsync(id);
+        [HttpGet("{username}")]
+        public async Task<MemberDto> GetUser(string username)
+        {
+            return await _repo.GetMemberByUsernameAsync(username);
+        }
     }
 }

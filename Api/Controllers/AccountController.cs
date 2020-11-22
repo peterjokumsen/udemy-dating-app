@@ -20,7 +20,7 @@ namespace Api.Controllers
         public AccountController(
             IAccountRepository repo,
             IOptions<ApiBehaviorOptions> apiOptions,
-            ILogger<AccountController> logger) : base(repo.Context, logger)
+            ILogger<AccountController> logger) : base(logger)
         {
             _tokenService = repo.TokenService;
             _repo = repo;
