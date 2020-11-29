@@ -1,5 +1,6 @@
 import { Observable, ReplaySubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { LoginModel, RegisterModel, UserWithToken } from '../models';
@@ -11,7 +12,7 @@ export class AccountService {
   private _currentUserSource = new ReplaySubject<UserWithToken>(1);
   currentUser$ = this._currentUserSource.asObservable();
 
-  baseUrl = 'https://localhost:5001/';
+  baseUrl = environment.apiUrl;
 
   constructor(private _http: HttpClient) { }
 
