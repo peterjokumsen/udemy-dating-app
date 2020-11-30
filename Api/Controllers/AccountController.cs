@@ -33,7 +33,7 @@ namespace Api.Controllers
         /// <remarks>
         /// Sample request:
         ///
-        ///     POST account/register
+        ///     POST api/account/register
         ///     {
         ///         "username": "John",
         ///         "password": "let-me-in"
@@ -79,7 +79,7 @@ namespace Api.Controllers
         /// <remarks>
         /// Sample request:
         ///
-        ///     POST account/login
+        ///     POST api/account/login
         ///     {
         ///         "username": "John",
         ///         "password": "let-me-in"

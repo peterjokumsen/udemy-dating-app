@@ -17,6 +17,7 @@ namespace Api.Repositories
         void Update(AppUser user);
         Task<bool> SaveAllAsync();
         Task<AppUser> GetUserByIdAsync(Guid id);
+        Task<AppUser> GetUserByUsernameAsync(string username);
         Task<IEnumerable<MemberDto>> GetMembersAsync();
         Task<MemberDto> GetMemberByUsernameAsync(string username);
     }
@@ -48,6 +49,13 @@ namespace Api.Repositories
         }
 
         public async Task<AppUser> GetUserByIdAsync(Guid id) => await _context.Users.FindAsync(id);
+
+        public async Task<AppUser> GetUserByUsernameAsync(string username)
+        {
+            return await _context.Users
+                .Where(u => EF.Functions.Like(u.UserName, username))
+                .SingleOrDefaultAsync();
+        }
 
         public async Task<IEnumerable<MemberDto>> GetMembersAsync()
         {
