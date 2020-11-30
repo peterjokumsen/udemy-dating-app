@@ -14,7 +14,10 @@ describe('NavComponent', () => {
     accountSvcSpy = jasmine.createSpyObj<AccountService>('AccountService', ['login']);
 
     await TestBed.configureTestingModule({
-      imports: [ FormsModule, RouterTestingModule ],
+      imports: [
+        FormsModule,
+        RouterTestingModule,
+      ],
       declarations: [ NavComponent ],
       providers: [
         { provide: AccountService, useValue: accountSvcSpy },
