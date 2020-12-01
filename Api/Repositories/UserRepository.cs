@@ -54,6 +54,7 @@ namespace Api.Repositories
         {
             return await _context.Users
                 .Where(u => EF.Functions.Like(u.UserName, username))
+                .Include(au => au.Photos)
                 .SingleOrDefaultAsync();
         }
 

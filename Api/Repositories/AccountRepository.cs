@@ -40,6 +40,7 @@ namespace Api.Repositories
         public Task<AppUser> FindUserAsync(string username)
         {
             return Context.Users
+                .Include(u => u.Photos)
                 .SingleOrDefaultAsync(u => EF.Functions.Like(username, u.UserName));
         }
 

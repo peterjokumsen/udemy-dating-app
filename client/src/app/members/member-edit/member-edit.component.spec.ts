@@ -1,7 +1,9 @@
 import { cold } from 'jasmine-marbles';
+import { MockComponent } from 'ng-mocks';
 import { ToastrService } from 'ngx-toastr';
 import { AccountService, MemberService } from 'src/app/services';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { PhotoEditorComponent } from '../photo-editor/photo-editor.component';
 import { MemberEditComponent } from './member-edit.component';
 
 describe('MemberEditComponent', () => {
@@ -16,7 +18,10 @@ describe('MemberEditComponent', () => {
         { provide: MemberService, useValue: {} },
         { provide: AccountService, useValue: {} },
       ],
-      declarations: [ MemberEditComponent ]
+      declarations: [
+        MemberEditComponent,
+        MockComponent(PhotoEditorComponent),
+      ]
     }).compileComponents();
   });
 

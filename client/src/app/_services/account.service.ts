@@ -20,8 +20,7 @@ export class AccountService {
     return this._http.post(`${this.baseUrl}account/login`, model).pipe(
       tap((user: UserWithToken) => {
         if (!!user) {
-          localStorage.setItem('user', JSON.stringify(user));
-          this._currentUserSource.next(user);
+          this.setCurrentUser(user);
         }
       })
     );
@@ -31,14 +30,16 @@ export class AccountService {
     return this._http.post(`${this.baseUrl}account/register`, model).pipe(
       tap((user: UserWithToken) => {
         if (!!user) {
-          localStorage.setItem('user', JSON.stringify(user));
-          this._currentUserSource.next(user);
+          this.setCurrentUser(user);
         }
       }),
     );
   }
 
-  setCurrentUser(user: UserWithToken): void {
+  setCurrentUser(user?: UserWithToken): void {
+    user = !user ? JSON.parse(localStorage.getItem('user')) : user;
+
+    localStorage.setItem('user', JSON.stringify(user));
     this._currentUserSource.next(user);
   }
 
