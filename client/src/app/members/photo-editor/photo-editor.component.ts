@@ -1,6 +1,6 @@
 import { FileUploader } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
-import { first, tap, withLatestFrom } from 'rxjs/operators';
+import { first, map, mergeMap, tap } from 'rxjs/operators';
 import { Member } from 'src/app/_models/member';
 import { Photo, UserWithToken } from 'src/app/models';
 import { AccountService, MemberService } from 'src/app/services';
@@ -24,6 +24,16 @@ export class PhotoEditorComponent implements OnInit {
     private _accSvc: AccountService,
     private _memberSvc: MemberService,
   ) { }
+
+  protected updateMainPhoto(photo: Photo): Observable<UserWithToken> {
+    return this._user$.pipe(
+      first(),
+      tap((user) => {
+        user.photoUrl = photo.url;
+        this._accSvc.setCurrentUser(user);
+      }),
+    );
+  }
 
   ngOnInit(): void {
     this._user$ = this._accSvc.currentUser$;
@@ -54,18 +64,22 @@ export class PhotoEditorComponent implements OnInit {
 
     this.uploader.onSuccessItem = (item, response, status, headers) => {
       if (response) {
-        const photo = JSON.parse(response);
+        const photo: Photo = JSON.parse(response);
         this.member.photos.push(photo);
+        if (photo.isMain) {
+          this.updateMainPhoto(photo).subscribe();
+          this.member.photoUrl = photo.url;
+        }
       }
     };
   }
 
   setMainPhoto(photo: Photo): void {
     this._memberSvc.setPhotoAsMain(this.member, photo).pipe(
-      withLatestFrom(this._user$),
-      tap(([member, user]) => {
-        user.photoUrl = photo.url;
-        this._accSvc.setCurrentUser(user);
+      mergeMap(m => this.updateMainPhoto(photo).pipe(
+        map(() => m))
+      ),
+      tap((member) => {
         this.member = member;
       }),
       first(),

@@ -1,6 +1,8 @@
+import { MockComponent } from 'ng-mocks';
 import { ToastrService } from 'ngx-toastr';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TextInputComponent } from '../_forms/text-input/text-input.component';
 import { AccountService } from '../services';
 import { RegisterComponent } from './register.component';
 
@@ -13,12 +15,18 @@ describe('RegisterComponent', () => {
     accountSpy = jasmine.createSpyObj<AccountService>('AccountService', ['register']);
 
     await TestBed.configureTestingModule({
-      imports: [ FormsModule ],
+      imports: [
+        FormsModule,
+        ReactiveFormsModule,
+      ],
       providers: [
         { provide: AccountService, useValue: accountSpy },
         { provide: ToastrService, useValue: {} },
       ],
-      declarations: [ RegisterComponent ]
+      declarations: [
+        RegisterComponent,
+        MockComponent(TextInputComponent),
+      ]
     }).compileComponents();
   });
 

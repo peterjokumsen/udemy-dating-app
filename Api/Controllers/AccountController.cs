@@ -4,6 +4,7 @@ using Api.Dtos;
 using Api.Entities;
 using Api.Repositories;
 using Api.Services;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -16,15 +17,18 @@ namespace Api.Controllers
         private readonly ITokenService _tokenService;
         private readonly IAccountRepository _repo;
         private readonly IOptions<ApiBehaviorOptions> _apiOptions;
+        private readonly IMapper _mapper;
 
         public AccountController(
             IAccountRepository repo,
             IOptions<ApiBehaviorOptions> apiOptions,
+            IMapper mapper,
             ILogger<AccountController> logger) : base(logger)
         {
             _tokenService = repo.TokenService;
             _repo = repo;
             _apiOptions = apiOptions;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -56,13 +60,12 @@ namespace Api.Controllers
                 return _apiOptions.Value.InvalidModelStateResponseFactory(ControllerContext);
             }
 
+            var user = _mapper.Map<AppUser>(input);
+
             var hash = _repo.ComputeHash(input.Password, out var salt);
-            var user = new AppUser
-            {
-                UserName = input.Username,
-                PasswordHash = hash,
-                PasswordSalt = salt,
-            };
+            user.UserName = input.Username;
+            user.PasswordHash = hash;
+            user.PasswordSalt = salt;
 
             await _repo.AddUserAsync(user);
 
@@ -70,6 +73,7 @@ namespace Api.Controllers
             {
                 Username = user.UserName,
                 Token = _tokenService.CreateToken(user),
+                KnownAs = user.KnownAs,
             });
         }
 
@@ -111,6 +115,7 @@ namespace Api.Controllers
                 Username = user.UserName,
                 Token = _tokenService.CreateToken(user),
                 PhotoUrl = user.Photos.FirstOrDefault(p => p.IsMain)?.Url,
+                KnownAs = user.KnownAs,
             });
         }
     }
