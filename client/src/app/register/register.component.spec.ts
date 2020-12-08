@@ -2,6 +2,8 @@ import { MockComponent } from 'ng-mocks';
 import { ToastrService } from 'ngx-toastr';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
+import { DateInputComponent } from '../_forms/date-input/date-input.component';
 import { TextInputComponent } from '../_forms/text-input/text-input.component';
 import { AccountService } from '../services';
 import { RegisterComponent } from './register.component';
@@ -18,6 +20,7 @@ describe('RegisterComponent', () => {
       imports: [
         FormsModule,
         ReactiveFormsModule,
+        RouterTestingModule,
       ],
       providers: [
         { provide: AccountService, useValue: accountSpy },
@@ -26,6 +29,7 @@ describe('RegisterComponent', () => {
       declarations: [
         RegisterComponent,
         MockComponent(TextInputComponent),
+        MockComponent(DateInputComponent),
       ]
     }).compileComponents();
   });
