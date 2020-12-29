@@ -1,10 +1,10 @@
 ﻿using Api.Dtos;
 using Api.Entities;
-using Api.Helpers;
+using Api.MappingProfiles;
 using AutoMapper;
 using Xunit;
 
-namespace Api.Tests.Helpers
+namespace Api.Tests.MappingProfiles
 {
     public class AutoMapperFixture
     {

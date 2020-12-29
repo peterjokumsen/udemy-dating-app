@@ -3,7 +3,7 @@ using Api.Dtos;
 using Api.Entities;
 using Api.Extensions;
 
-namespace Api.Helpers
+namespace Api.MappingProfiles
 {
     public partial class AutoMapperProfiles
     {

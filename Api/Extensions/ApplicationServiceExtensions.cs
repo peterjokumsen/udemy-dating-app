@@ -1,5 +1,6 @@
 ﻿using Api.Data;
 using Api.Helpers;
+using Api.MappingProfiles;
 using Api.Repositories;
 using Api.Services;
 using AutoMapper;
