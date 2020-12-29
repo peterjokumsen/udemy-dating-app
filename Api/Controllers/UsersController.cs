@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Api.Dtos;
 using Api.Entities;
 using Api.Extensions;
+using Api.Helpers;
 using Api.Repositories;
 using Api.Services;
 using AutoMapper;
@@ -38,9 +39,16 @@ namespace Api.Controllers
         /// </summary>
         /// <returns>All users</returns>
         [HttpGet]
-        public async Task<IEnumerable<MemberDto>> GetUsers()
+        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
         {
-            return await _repo.GetMembersAsync();
+            var members = await _repo.GetMembersAsync(userParams);
+            Response.AddPaginationHeader(
+                members.CurrentPage,
+                members.PageSize,
+                members.TotalCount,
+                members.TotalPages);
+
+            return Ok(members);
         }
 
         /// <summary>

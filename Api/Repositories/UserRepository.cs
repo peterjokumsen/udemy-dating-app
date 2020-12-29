@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Api.Data;
 using Api.Dtos;
 using Api.Entities;
+using Api.Extensions;
+using Api.Helpers;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +20,7 @@ namespace Api.Repositories
         Task<bool> SaveAllAsync();
         Task<AppUser> GetUserByIdAsync(Guid id);
         Task<AppUser> GetUserByUsernameAsync(string username);
-        Task<IEnumerable<MemberDto>> GetMembersAsync();
+        Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams);
         Task<MemberDto> GetMemberByUsernameAsync(string username);
     }
 
@@ -58,11 +60,13 @@ namespace Api.Repositories
                 .SingleOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<MemberDto>> GetMembersAsync()
+        public async Task<PagedList<MemberDto>> GetMembersAsync(UserParams userParams)
         {
-            return await _context.Users
+            var query = _context.Users
                 .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+                .AsNoTracking();
+
+            return await query.ToPagedListAsync(userParams.PageNumber, userParams.PageSize);
         }
 
         public async Task<MemberDto> GetMemberByUsernameAsync(string username)
