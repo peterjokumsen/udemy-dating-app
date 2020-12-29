@@ -3,7 +3,7 @@ import { catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Member, PaginatedResult, Photo } from '../models';
+import { Member, PaginatedResult, Photo, UserParams } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -12,31 +12,32 @@ export class MemberService {
   protected _fetchedAll = false;
 
   baseUrl = environment.apiUrl;
-  paginatedResult: PaginatedResult<Member[]> = new PaginatedResult<Member[]>();
 
   constructor(
     private _http: HttpClient,
   ) { }
 
-  getMembers(page?: number, itemsPerPage?: number): Observable<PaginatedResult<Member[]>> {
+  private getPaginationHeaders(pageNumber: number, pageSize: number): HttpParams {
     let params = new HttpParams();
-    if (!!page && !!itemsPerPage) {
-      params = params.append('pageNumber', page.toString());
-      params = params.append('pageSize', itemsPerPage.toString());
-    }
-    return this._http.get<Member[]>(
-      `${this.baseUrl}users`,
-      { observe: 'response', params },
-    ).pipe(
-      map((response) => {
-        this.paginatedResult.result = response.body;
-        if (!!response.headers.get('Pagination')) {
-          this.paginatedResult.pagination = JSON.parse(response.headers.get('Pagination'));
-        }
+    params = params.append('pageNumber', pageNumber.toString());
+    params = params.append('pageSize', pageSize.toString());
 
-        return this.paginatedResult;
-      }),
+    return params;
+  }
+
+  private getPaginatedResult<T>(url: string, params: HttpParams): Observable<PaginatedResult<T>> {
+    return this._http.get<T>(url, { observe: 'response', params }).pipe(
+      map((response) => new PaginatedResult<T>(response)),
     );
+  }
+
+  getMembers(userParams: UserParams): Observable<PaginatedResult<Member[]>> {
+    let params = this.getPaginationHeaders(userParams.pageNumber, userParams.pageSize);
+    params = params.append('minAge', userParams.minAge.toString());
+    params = params.append('maxAge', userParams.maxAge.toString());
+    params = params.append('gender', userParams.gender);
+
+    return this.getPaginatedResult<Member[]>(`${this.baseUrl}users`, params);
   }
 
   getMember(username: string): Observable<Member> {

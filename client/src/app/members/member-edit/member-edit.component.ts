@@ -1,7 +1,7 @@
 import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { filter, shareReplay, switchMap, tap } from 'rxjs/operators';
-import { Member, UserWithToken } from 'src/app/models';
+import { Member, User } from 'src/app/models';
 import { AccountService, MemberService } from 'src/app/services';
 import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
@@ -15,7 +15,7 @@ export class MemberEditComponent implements OnInit {
   @ViewChild('editForm') editForm: NgForm;
 
   member$: Observable<Member>;
-  user$: Observable<UserWithToken>;
+  user$: Observable<User>;
   member: Member;
 
   constructor(

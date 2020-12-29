@@ -2,7 +2,7 @@ import { FileUploader } from 'ng2-file-upload';
 import { Observable } from 'rxjs';
 import { first, map, mergeMap, tap } from 'rxjs/operators';
 import { Member } from 'src/app/_models/member';
-import { Photo, UserWithToken } from 'src/app/models';
+import { Photo, User } from 'src/app/models';
 import { AccountService, MemberService } from 'src/app/services';
 import { environment } from 'src/environments/environment';
 import { Component, Input, OnInit } from '@angular/core';
@@ -13,7 +13,7 @@ import { Component, Input, OnInit } from '@angular/core';
   styleUrls: ['./photo-editor.component.scss']
 })
 export class PhotoEditorComponent implements OnInit {
-  protected _user$: Observable<UserWithToken>;
+  protected _user$: Observable<User>;
 
   @Input() member: Member;
   uploader: FileUploader;
@@ -25,7 +25,7 @@ export class PhotoEditorComponent implements OnInit {
     private _memberSvc: MemberService,
   ) { }
 
-  protected updateMainPhoto(photo: Photo): Observable<UserWithToken> {
+  protected updateMainPhoto(photo: Photo): Observable<User> {
     return this._user$.pipe(
       first(),
       tap((user) => {
@@ -47,7 +47,7 @@ export class PhotoEditorComponent implements OnInit {
     this.hasBaseDropZoneOver = e;
   }
 
-  initializeUploader(user: UserWithToken): void {
+  initializeUploader(user: User): void {
     this.uploader = new FileUploader({
       url: `${this.baseUrl}users/add-photo`,
       authToken: `Bearer ${user.token}`,
