@@ -1,23 +1,55 @@
-﻿using Api.Helpers;
+﻿using Api.Dtos;
+using Api.Entities;
+using Api.Helpers;
 using AutoMapper;
 using Xunit;
 
 namespace Api.Tests.Helpers
 {
-    public class AutoMapperProfilesTests
+    public class AutoMapperFixture
     {
-        private readonly IMapper _mapper;
+        public IMapper Mapper { get; }
 
-        public AutoMapperProfilesTests()
+        public AutoMapperFixture()
         {
-            _mapper = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfiles>())
+            Mapper = new MapperConfiguration(cfg => cfg.AddProfile<AutoMapperProfiles>())
                 .CreateMapper();
+        }
+    }
+
+    public class AutoMapperProfilesTests : IClassFixture<AutoMapperFixture>
+    {
+        private IMapper Mapper { get; }
+
+        public AutoMapperProfilesTests(AutoMapperFixture fixture)
+        {
+            Mapper = fixture.Mapper;
         }
 
         [Fact]
         public void ConfigIsValid()
         {
-            _mapper.ConfigurationProvider.AssertConfigurationIsValid();
+            Mapper.ConfigurationProvider.AssertConfigurationIsValid();
+        }
+
+        [Fact]
+        public void MapRegisterDtoToAppUser_SetsAtLeastOneValue()
+        {
+            var source = new RegisterDto { KnownAs = "john" };
+
+            var result = Mapper.Map<AppUser>(source);
+
+            Assert.Equal("john", result.KnownAs);
+        }
+
+        [Fact]
+        public void MapUpdateMemberDtoToAppUser_SetsAtLeastOneValue()
+        {
+            var source = new MemberUpdateDto { City = "city" };
+
+            var result = Mapper.Map<AppUser>(source);
+
+            Assert.Equal("city", result.City);
         }
     }
 }

@@ -1,9 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Api.Controllers;
 using Api.Dtos;
 using Api.Entities;
 using Api.Repositories;
 using Api.Services;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -15,6 +18,7 @@ namespace Api.Tests.Controllers
 {
     public class AccountControllerTests
     {
+        private readonly Mock<IMapper> _mapperMock = new Mock<IMapper>();
         private readonly Mock<IAccountRepository> _repoMock = new Mock<IAccountRepository>();
         private readonly Mock<ITokenService> _tokenServiceMock = new Mock<ITokenService>();
 
@@ -27,6 +31,7 @@ namespace Api.Tests.Controllers
             Controller = new AccountController(
                 _repoMock.Object,
                 Mock.Of<IOptions<ApiBehaviorOptions>>(),
+                _mapperMock.Object,
                 Mock.Of<ILogger<AccountController>>());
         }
 
@@ -47,7 +52,7 @@ namespace Api.Tests.Controllers
             _repoMock.Setup(m => m.AddUserAsync(It.IsAny<AppUser>()))
                 .Callback<AppUser>(a => createdUser = a)
                 .Returns(Task.CompletedTask);
-
+            _mapperMock.Setup(m => m.Map<AppUser>(It.IsAny<RegisterDto>())).Returns(new AppUser());
             _tokenServiceMock.Setup(m => m.CreateToken(It.IsAny<AppUser>()))
                 .Returns("42");
 
@@ -87,6 +92,7 @@ namespace Api.Tests.Controllers
                 UserName = "john",
                 PasswordSalt = salt,
                 PasswordHash = hash,
+                Photos = new List<Photo>(),
             };
 
             _repoMock.Setup(m => m.FindUserAsync(It.IsAny<string>()))
