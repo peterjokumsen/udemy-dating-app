@@ -17,10 +17,12 @@ export class MemberService {
     private _http: HttpClient,
   ) { }
 
-  private getPaginationHeaders(pageNumber: number, pageSize: number): HttpParams {
+  private getPaginationHeaders(inputs?: UserParams): HttpParams {
     let params = new HttpParams();
-    params = params.append('pageNumber', pageNumber.toString());
-    params = params.append('pageSize', pageSize.toString());
+    for (const key in inputs) {
+      if (!inputs[key]) continue;
+      params = params.append(key, inputs[key].toString());
+    }
 
     return params;
   }
@@ -32,10 +34,7 @@ export class MemberService {
   }
 
   getMembers(userParams: UserParams): Observable<PaginatedResult<Member[]>> {
-    let params = this.getPaginationHeaders(userParams.pageNumber, userParams.pageSize);
-    params = params.append('minAge', userParams.minAge.toString());
-    params = params.append('maxAge', userParams.maxAge.toString());
-    params = params.append('gender', userParams.gender);
+    let params = this.getPaginationHeaders(userParams);
 
     return this.getPaginatedResult<Member[]>(`${this.baseUrl}users`, params);
   }
