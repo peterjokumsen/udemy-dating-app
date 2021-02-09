@@ -4,11 +4,16 @@ import { catchError } from 'rxjs/operators';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
+import { AccountService } from '../_services/account.service';
 
 @Injectable()
 export class ErrorInterceptor implements HttpInterceptor {
 
-  constructor(private _router: Router, private _toastr: ToastrService) {}
+  constructor(
+    private _router: Router,
+    private _toastr: ToastrService,
+    private _accSvc: AccountService,
+  ) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     return next.handle(request).pipe(
@@ -32,7 +37,8 @@ export class ErrorInterceptor implements HttpInterceptor {
               break;
 
             case 401:
-              this._toastr.error(error.error.title, error.status);
+              this._toastr.error('Failed to retrieve data from server, please login to continue...', 'Login Required');
+              this._accSvc.logout();
               break;
 
             case 404:
