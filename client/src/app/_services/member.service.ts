@@ -1,20 +1,24 @@
 import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, first, map, tap } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Member, PaginatedResult, Photo, UserParams } from '../models';
+import { AccountService } from './account.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MemberService {
+  private _userParams: UserParams;
   protected _fetchedAll = false;
 
   baseUrl = environment.apiUrl;
+  memberCache = new Map();
 
   constructor(
     private _http: HttpClient,
+    private _accSvc: AccountService,
   ) { }
 
   private getPaginationHeaders(inputs?: UserParams): HttpParams {
@@ -33,13 +37,44 @@ export class MemberService {
     );
   }
 
-  getMembers(userParams: UserParams): Observable<PaginatedResult<Member[]>> {
-    let params = this.getPaginationHeaders(userParams);
+  resetUserParams(): UserParams {
+    this._accSvc.currentUser$.pipe(
+      first(),
+      map((user) => new UserParams(user)),
+      tap((params) => this._userParams = params),
+    ).subscribe();
 
-    return this.getPaginatedResult<Member[]>(`${this.baseUrl}users`, params);
+    return this._userParams;
+  }
+
+  getUserParams(): UserParams {
+    return !this._userParams ? this.resetUserParams() : this._userParams;
+  }
+
+  updateParams(p: Partial<UserParams>): UserParams {
+    this._userParams = { ...this._userParams, ...p };
+    return this._userParams;
+  }
+
+  getMembers(userParams: UserParams): Observable<PaginatedResult<Member[]>> {
+    const key = Object.values(userParams).join('-');
+    let response = this.memberCache.get(key);
+    if (!!response) return of(response);
+
+    const params = this.getPaginationHeaders(userParams);
+
+    return this.getPaginatedResult<Member[]>(`${this.baseUrl}users`, params).pipe(
+      tap(r => this.memberCache.set(key, r)),
+    );
   }
 
   getMember(username: string): Observable<Member> {
+    const member = [...this.memberCache.values()].reduce(
+      (arr, elem) => arr.concat(elem.result), [],
+    ).find((u: Member) => u.username === username);
+
+    if (!!member) return of(member);
+
     return this._http.get<Member>(`${this.baseUrl}users/${username}`).pipe(
     );
   }

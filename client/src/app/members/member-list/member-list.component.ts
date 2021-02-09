@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs';
-import { first, map, tap } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { UserParams } from 'src/app/_models/user-params';
-import { Member, Pagination, User } from 'src/app/models';
-import { AccountService, MemberService } from 'src/app/services';
+import { Member, Pagination } from 'src/app/models';
+import { MemberService } from 'src/app/services';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -12,20 +12,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MemberListComponent implements OnInit {
   members$: Observable<Member[]>;
-  user$: Observable<User>;
-  pagination: Pagination;
   userParams: UserParams;
+
+  pagination: Pagination;
+  get hasPagination(): boolean { return !!this.pagination; }
+  get totalResults(): string {
+    return !this.pagination ? 'Loading...' : this.pagination.totalItems.toString();
+  }
 
   genderList = [{value: 'male', display: 'Males'}, {value: 'female', display: 'Females'}];
 
   constructor(
     private _memberSvc: MemberService,
-    private _accSvc: AccountService,
   ) { }
 
   ngOnInit(): void {
-    this.user$ = this._accSvc.currentUser$;
-    this.resetFilters();
+    this.userParams = this._memberSvc.getUserParams();
+
+    this.loadMembers();
   }
 
   loadMembers() {
@@ -38,16 +42,14 @@ export class MemberListComponent implements OnInit {
   }
 
   resetFilters() {
-    this.user$.pipe(
-      first(),
-      tap((user) => this.userParams = new UserParams(user)),
-    ).subscribe();
+    this.userParams = this._memberSvc.resetUserParams();
 
     this.loadMembers();
   }
 
   pageChanged(e) {
-    this.userParams.pageNumber = e.page;
+    this.userParams = this._memberSvc.updateParams({ ...this.userParams, pageNumber: e.page });
+
     this.loadMembers();
   }
 }
